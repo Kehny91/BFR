@@ -4,7 +4,7 @@ import numpy
 import copy
 
 MAXSIGMOID = 50
-caca
+
 def sigmoid(x):
     if x >MAXSIGMOID:
         return 1
