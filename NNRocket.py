@@ -16,7 +16,7 @@ NBINDIVPOP = 100 #nbIndiv/pop
 DT = 0.03
 STEPS = 1000
 genetique = NN.GenetiqueForNN(10,NBINDIVPOP,0.5)
-NBESSAI = 3
+NBESSAI = 1
 
 def getInputFromRocket(rocket):
     v = rocket.getVelocity() #On veut quasi-saturer a 100m/s
@@ -30,9 +30,9 @@ def getInputFromRocket(rocket):
 def evalLanding(neuralNet,seed):
     random.seed(seed)
 
-    amplitudePosition = 100
+    amplitudePosition = 30
     amplitudeTheta = 15 * BFR.toRad
-    amplitudeVitesse = 50
+    amplitudeVitesse = 25
     amplitudeW = 15 * BFR.toRad
 
     antifitness = [0]
@@ -58,12 +58,12 @@ def evalLanding(neuralNet,seed):
             gimbal = gimbal*2 - 1
             myRocket.compute(DT,throttle,gimbal)
             if myRocket.getPosition().y - myRocket.mainFrame.dx/2<0:
-                penalty[0] += (-10*(myRocket.getPosition().y- myRocket.mainFrame.dx/2))*DT
+                penalty[0] += (-20*(myRocket.getPosition().y- myRocket.mainFrame.dx/2))*DT
             seuil = 10
             if myRocket.getPosition().y - myRocket.mainFrame.dx/2>0 and myRocket.getPosition().y - myRocket.mainFrame.dx/2<seuil: #On est a seuil m du sol
-                penalty[1] -= 5*(seuil-(myRocket.getPosition().y- myRocket.mainFrame.dx/2))*DT
+                penalty[1] -= 20*(seuil-(myRocket.getPosition().y- myRocket.mainFrame.dx/2))*DT
             #Statique Pos
-            antifitness[0] += (abs(myRocket.getPosition().x-testRocketNN.WIDTH/2/testRocketNN.SCALE) + abs(myRocket.getPosition().y - myRocket.mainFrame.dx/2)) * DT *0.1
+            antifitness[0] += (math.sqrt((myRocket.getPosition().x-testRocketNN.WIDTH/2/testRocketNN.SCALE)**2 + (myRocket.getPosition().y - myRocket.mainFrame.dx/2)**2)) * DT *0.1
     return (-sum(antifitness)-sum(penalty),antifitness,penalty)
 
 
@@ -75,7 +75,7 @@ def evalHover(neuralNet,seed):
     amplitudeVitesse = 20
     amplitudeW = 15 * BFR.toRad
 
-    antifitness = [0,0]
+    antifitness = [0,0,0]
     penalty = [0]
 
     for essai in range(NBESSAI):
@@ -98,16 +98,17 @@ def evalHover(neuralNet,seed):
             gimbal = gimbal*2 - 1
             myRocket.compute(DT,throttle,gimbal)
             if myRocket.getTheta()<0:
-                penalty[0] += 100 *abs(math.sin(myRocket.getTheta()))*DT
+                penalty[0] += 1000 *abs(math.sin(myRocket.getTheta()))*DT
             #Dynamique Ang
             antifitness[0] += abs(myRocket.getW())*DT * 2
+            antifitness[1] += abs(BFR.normalize(myRocket.getTheta()-math.pi/2))*DT*5
             #Dynamique Pos
-            antifitness[1] += myRocket.getVelocity().norm() * DT
+            antifitness[2] += myRocket.getVelocity().norm() * DT
     return (-sum(antifitness)-sum(penalty),antifitness,penalty)
 
 if __name__ == "__main__":
-    genetique.setEvaluationFCT(evalHover)
-    #genetique.setEvaluationFCT(evalLanding)
+    #genetique.setEvaluationFCT(evalHover)
+    genetique.setEvaluationFCT(evalLanding)
     
     choix = input("Do you want to use an old pop ? (Y/N)\n")
     if choix=="Y":
@@ -121,7 +122,7 @@ if __name__ == "__main__":
     genetique.setTestPopulation(pop)
 
     process = None
-    for i in range(10):
+    for i in range(30):
         print("Gen ",i)
         seed = genetique.doOneStep(quiet=False)
         if process !=None:
@@ -131,7 +132,7 @@ if __name__ == "__main__":
 
         amplitudePosition = 30
         amplitudeTheta = 15 * BFR.toRad
-        amplitudeVitesse = 20
+        amplitudeVitesse = 25
         amplitudeW = 15 * BFR.toRad
             
         myRocket = BFR.RocketClassique(10,3,30000,1500000,4*BFR.toRad,460,5.0,4,
