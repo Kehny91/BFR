@@ -47,6 +47,8 @@ def blitRocketPositionned(image0, rocket, surf):
 screen = 0
 myTheta0RocketImage = 0
 background = 0
+pygame.font.init()
+font = pygame.font.SysFont('arial', 32)
 
 #affichage
 def update(dt,rocket,throttle,gimbal):
@@ -56,6 +58,13 @@ def update(dt,rocket,throttle,gimbal):
     rocket.compute(dt,throttle,gimbal)
     screen.blit(background,(0,0))
     blitRocketPositionned(myTheta0RocketImage,rocket,screen)
+    text = font.render("Throttle = "+str( throttle ), True, (0, 0,0))
+    textrect = text.get_rect()
+    screen.blit(text,textrect)
+    text = font.render("Gimbal = "+str( gimbal ), True, (0, 0,0))
+    textrect = text.get_rect()
+    textrect.move_ip(0,40)
+    screen.blit(text,textrect)
     pygame.display.flip()
 
 def testRocketNN(dt,rocket,steps,neuralNet):

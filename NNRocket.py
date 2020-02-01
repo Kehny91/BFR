@@ -107,8 +107,8 @@ def evalHover(neuralNet,seed):
     return (-sum(antifitness)-sum(penalty),antifitness,penalty)
 
 if __name__ == "__main__":
-    #genetique.setEvaluationFCT(evalHover)
-    genetique.setEvaluationFCT(evalLanding)
+    genetique.setEvaluationFCT(evalHover)
+    #genetique.setEvaluationFCT(evalLanding)
     
     choix = input("Do you want to use an old pop ? (Y/N)\n")
     if choix=="Y":
@@ -116,7 +116,7 @@ if __name__ == "__main__":
     else:
         pop = []
         for i in range(NBINDIVPOP):
-            pop.append(NN.NeuralNetwork(7,1,7,2))
+            pop.append(NN.NeuralNetwork(7,2,7,2))
             pop[-1].createRandomWeight(0,NN.MAXSIGMOID)
 
     genetique.setTestPopulation(pop)
@@ -132,7 +132,7 @@ if __name__ == "__main__":
 
         amplitudePosition = 30
         amplitudeTheta = 15 * BFR.toRad
-        amplitudeVitesse = 25
+        amplitudeVitesse = 20
         amplitudeW = 15 * BFR.toRad
             
         myRocket = BFR.RocketClassique(10,3,30000,1500000,4*BFR.toRad,460,5.0,4,
