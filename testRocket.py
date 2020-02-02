@@ -1,7 +1,9 @@
-import pygame
+
 import BFR
 import time
 import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+import pygame
 import math
 
 WIDTH = 600
@@ -60,9 +62,9 @@ throttle = 0.05
 gimbal = 0
 
 def autopilot(fusee):
-    gainThrottle = 5.0
+    gainThrottle = 3
     gainPAngulaire = 1.5
-    gainKAngulaire = 0.4
+    gainKAngulaire = 0.6
     gainPCorrectionVx = 0.08
     crossGain = 0.1
     errorVY = max(0,0 - fusee.getVelocity().y)
