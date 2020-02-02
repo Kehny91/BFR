@@ -3,6 +3,7 @@ import BFR
 import NNRocket
 import time
 import os
+import math
 import numpy
 
 WIDTH = 600
@@ -62,24 +63,32 @@ def getSurfaceThrottle(throttle,width,height):
     out.blit(inner,innerRect)
 
     bar = pygame.Surface((width-4,int((height-4)*throttle)))
-    bar.fill((255,120,120))
+    bar.fill((255,80,80))
     barRect = bar.get_rect(bottomleft=innerRect.bottomleft)
     out.blit(bar,barRect)
     
     return out
-"""
-def getSurfaceGimbal(gimbalAngleRad,width,height):
+
+def getSurfaceGimbal(gimbalAngleRad,gimbalMaxAngleRad,width,height):
     out = pygame.Surface((width,height))
     out.fill((0,0,0))
     rect = out.get_rect()
-
-    posBase = (int(width/2),5)
-    pygame.draw.circle(out, (0,0,0), (int(width/2),5), 10)
-
-    posTarget = posBase[0] - 
+    inner = pygame.Surface((width-4,height-4))
+    innerRect = inner.get_rect(center=rect.center) #sachant que center=...
+    inner.fill((255,255,255))
     
+    #radius*math.sin(gimbalMaxAngle) = width/2
+    radius = min((width-4)/2/math.sin(gimbalMaxAngleRad),height-4)
+
+    posBase = (int((width-4)/2),2)
+    posTarget = (posBase[0] + radius*math.sin(gimbalAngleRad), posBase[1] + radius*math.cos(gimbalAngleRad))
+
+    pygame.draw.line(inner, (255,80,80), posBase, posTarget, 2)
+    pygame.draw.circle(inner, (0,0,0), (int(width/2),5), 10)
+
+    out.blit(inner,innerRect)
     
-    return out"""
+    return out
 
 
 #affichage
@@ -93,7 +102,12 @@ def update(dt,rocket,throttle,gimbal):
     #text = font.render("Throttle = "+str( throttle ), True, (0, 0,0))
     #textrect = text.get_rect()
     affichageThrottle = getSurfaceThrottle(throttle,20,100)
-    screen.blit(affichageThrottle,(40,40))
+    affichageThrottleRect = affichageThrottle.get_rect(topleft = (40,40))
+    screen.blit(affichageThrottle,affichageThrottleRect)
+
+    affichageGimbal = getSurfaceGimbal(gimbal*rocket.thruster.maxGimbalSweep,rocket.thruster.maxGimbalSweep,100,100)
+    affichageGimbalRect = affichageGimbal.get_rect(topleft = affichageThrottleRect.topright)
+    screen.blit(affichageGimbal,affichageGimbalRect)
     #text = font.render("Gimbal = "+str( gimbal ), True, (0, 0,0))
     #textrect = text.get_rect()
     #textrect.move_ip(0,40)
