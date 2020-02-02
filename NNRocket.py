@@ -30,7 +30,7 @@ def getInputFromRocket(rocket):
 def evalLanding(neuralNet,seed):
     random.seed(seed)
 
-    amplitudePosition = 30
+    amplitudePosition = 50
     amplitudeTheta = 15 * BFR.toRad
     amplitudeVitesse = 25
     amplitudeW = 15 * BFR.toRad
@@ -107,8 +107,8 @@ def evalHover(neuralNet,seed):
     return (-sum(antifitness)-sum(penalty),antifitness,penalty)
 
 if __name__ == "__main__":
-    genetique.setEvaluationFCT(evalHover)
-    #genetique.setEvaluationFCT(evalLanding)
+    #genetique.setEvaluationFCT(evalHover)
+    genetique.setEvaluationFCT(evalLanding)
     
     choix = input("Do you want to use an old pop ? (Y/N)\n")
     if choix=="Y":
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     genetique.setTestPopulation(pop)
 
     process = None
-    for i in range(30):
+    for i in range(600):
         print("Gen ",i)
         seed = genetique.doOneStep(quiet=False)
         if process !=None:
@@ -130,11 +130,11 @@ if __name__ == "__main__":
 
         random.seed(seed)
 
-        amplitudePosition = 30
+        amplitudePosition = 50
         amplitudeTheta = 15 * BFR.toRad
-        amplitudeVitesse = 20
+        amplitudeVitesse = 25
         amplitudeW = 15 * BFR.toRad
-            
+                
         myRocket = BFR.RocketClassique(10,3,30000,1500000,4*BFR.toRad,460,5.0,4,
                                     theta=BFR.pi/2 + (random.random()*2-1)*amplitudeTheta,
                                     x=testRocketNN.PHY_WIDTH/2 + (random.random()*2-1)*amplitudePosition,
