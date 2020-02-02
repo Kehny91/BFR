@@ -3,7 +3,7 @@ import math
 import numpy
 import copy
 
-MAXSIGMOID = 30
+MAXSIGMOID = 50
 
 def sigmoid(x):
     if x >MAXSIGMOID:
