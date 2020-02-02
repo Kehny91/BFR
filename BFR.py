@@ -130,17 +130,36 @@ def constrain(x,m,M):
         return M
 
 class Thruster(Attachement):
-    def __init__(self,x,y,theta,maxThrust,maxGimbalSweep,ISP,mass,father=None):
+    def __init__(self,x,y,theta,maxThrust,maxGimbalSweep,ISP,mass,maxWGimbal = 2.0 * toRad,maxDThrottle = 1.0, father=None): #max 2.0 deg par seconde, et 100% de throttle par seconde
         super().__init__(x,y,theta,mass,father)
         self.maxThrust=maxThrust
         self.maxGimbalSweep=maxGimbalSweep
+        self.maxWGimbal = maxWGimbal
+        self.maxDThrottle = maxDThrottle
+        self.lastGimbalAngle = 0
+        self.lastThrottle = 0
         self.ISP=ISP
 
-    def thrust(self,throttle,gimbal):
-        return directeur((self.theta+constrain(gimbal,-1,1)*self.maxGimbalSweep)) * (self.maxThrust*constrain(throttle,0,1))
+    def thrust(self,throttle,gimbal,dt):
+        requestedGimbalAngle = constrain(gimbal,-1,1)*self.maxGimbalSweep
+        reachableMinGimbal = max( - self.maxGimbalSweep , self.lastGimbalAngle - self.maxWGimbal*dt) # Le max qu'on peut atteindre en un temps dt
+        reachableMaxGimbal = min(   self.maxGimbalSweep , self.lastGimbalAngle + self.maxWGimbal*dt) # Le min qu'on peut atteindre en un temps dt
+
+        requestedThrottle = throttle
+        reachableMinThrottle = max(0, self.lastThrottle - self.maxDThrottle*dt)
+        reachableMaxThrottle = min(1, self.lastThrottle + self.maxDThrottle*dt)
+        self.lastGimbalAngle = constrain(requestedGimbalAngle,reachableMinGimbal,reachableMaxGimbal)
+        self.lastThrottle = constrain(requestedThrottle,reachableMinThrottle,reachableMaxThrottle)
+        return directeur((self.theta + self.lastGimbalAngle)) * (self.maxThrust*self.lastThrottle)
     
     def massFlow(self,throttle):
         return self.maxThrust * throttle / (self.ISP*g_0)
+
+    def getGimbalAngle(self):
+        return self.lastGimbalAngle
+
+    def getThrottle(self):
+        return self.lastThrottle
 
 class RigidBody(Attachement):
     """Un Rigid Body gère les collisions. Il est referencé par son centre de masse/geometrie"""
@@ -217,7 +236,6 @@ class RocketClassique:
         self.theta0 = theta
         self.v0 = Vector(vx,vy)
         self.w0 = w
-        self.ponderation = 0.5
 
     def goToIntialState(self):
         self.mainFrame.setPosition(self.pos0.x,self.pos0.y,self.theta0)
@@ -250,7 +268,7 @@ class RocketClassique:
         moments=0
         for (dev,deltaPos,deltaTheta) in self.mainFrame.attachements:
             if (type(dev)==Thruster):
-                force=dev.thrust((self.ponderation*throttle + (1-self.ponderation)*self.last_throttle),gimbal)
+                force=dev.thrust(throttle,gimbal,dt)
             elif (type(dev)==Aileron):
                 force=dev.vectorAeroForce()
             else:

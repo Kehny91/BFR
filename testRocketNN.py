@@ -101,11 +101,11 @@ def update(dt,rocket,throttle,gimbal):
     blitRocketPositionned(myTheta0RocketImage,rocket,screen)
     #text = font.render("Throttle = "+str( throttle ), True, (0, 0,0))
     #textrect = text.get_rect()
-    affichageThrottle = getSurfaceThrottle(throttle,20,100)
+    affichageThrottle = getSurfaceThrottle(rocket.thruster.getThrottle(),20,100)
     affichageThrottleRect = affichageThrottle.get_rect(topleft = (40,40))
     screen.blit(affichageThrottle,affichageThrottleRect)
 
-    affichageGimbal = getSurfaceGimbal(gimbal*rocket.thruster.maxGimbalSweep,rocket.thruster.maxGimbalSweep,100,100)
+    affichageGimbal = getSurfaceGimbal(rocket.thruster.getGimbalAngle(),rocket.thruster.maxGimbalSweep,100,100)
     affichageGimbalRect = affichageGimbal.get_rect(topleft = affichageThrottleRect.topright)
     screen.blit(affichageGimbal,affichageGimbalRect)
     #text = font.render("Gimbal = "+str( gimbal ), True, (0, 0,0))
