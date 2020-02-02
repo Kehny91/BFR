@@ -56,6 +56,21 @@ def drawSynapse(surface,p1,p2,weight,maxWeightAmplitude):
     weightScaleThick = 15/maxWeightAmplitude
     pygame.draw.line(surface, color(weight,maxWeightAmplitude), p1, p2, max(1,min(15,int(weightScaleThick*abs(weight)))))
 
+def getTextSurface(text,width,height,color,colorBGN=(255,255,255)):
+    font = pygame.font.Font(None,height)
+    out = pygame.Surface((width,height))
+    out.fill((255,255,255))
+    rectOut = out.get_rect()
+
+    text = font.render(text, True, color,colorBGN) 
+    rectText = text.get_rect(center=rectOut.center)
+
+    out.blit(text,rectText)
+
+    return out
+
+
+
 def getNNRepresentation(neuralNet,size):
     out = pygame.Surface(size)
     out.fill((255,255,255))
@@ -64,10 +79,14 @@ def getNNRepresentation(neuralNet,size):
     radius = int(min(width,height)/(numpy.max(neuralNet.shapes)+1)/2)
     nbTotLayers = len(neuralNet.weights)+1
     posCenters=[]
-    maxs = []
+    maxsPos = []
+    maxsNeg = []
     for weight in neuralNet.weights:
-        maxs.append(numpy.amax(abs(weight)))
-    maxWeightAmplitude = max(maxs)
+        maxsPos.append(numpy.amax(weight))
+        maxsNeg.append(numpy.amin(weight))
+    maxPos = max([abs(i) for i in maxsPos])
+    maxNeg = max([abs(i) for i in maxsNeg])
+    maxWeightAmplitude = max(maxPos,maxNeg)
     
     for k in range(nbTotLayers):
         thisLayerX = int(width/(nbTotLayers+1)*(k+1))
@@ -86,23 +105,32 @@ def getNNRepresentation(neuralNet,size):
         for i,thisCenter in enumerate(posCenters[-2]):
             drawSynapse(out,thisCenter,posCenters[-1][-1],neuralNet.weights[-1][i][-1],maxWeightAmplitude)
 
+    labelMax = getTextSurface('{:10.2f}'.format(maxPos),out.get_width()/5,40,color(maxPos,maxWeightAmplitude))
+    labelMaxRect = labelMax.get_rect(topright = out.get_rect().topright)
+    out.blit(labelMax,labelMaxRect)
+    labelMin = getTextSurface("-"+'{:10.2f}'.format(maxNeg),out.get_width()/5,40,color(-maxNeg,maxWeightAmplitude))
+    labelMinRect = labelMin.get_rect(bottomright = out.get_rect().bottomright)
+    out.blit(labelMin,labelMinRect)
+
+
+    
     return out
 
 def printWeights(neuralNet):
     for k,weight in enumerate(neuralNet.weights):
-        print("Affichage de la matrice n° ",k)
+        print("Affichage de la matrice n *",k)
         print("[",end="")
-        for i in range(len(weight[0])):
+        for i in range(len(weight)):
             if i!=0:
                 print(" [",end="")
             else:
                 print("[",end="")
-            for j in range(len(weight[1])):
-                if j!=len(weight[1])-1:
+            for j in range(len(weight[0])):
+                if j!=len(weight[0])-1:
                     print('{:10.2f},  '.format(weight[i,j]),end="")
                 else:
                     print('{:10.2f}'.format(weight[i,j]),end="")
-            if i!=len(weight[0])-1:
+            if i!=len(weight)-1:
                 print("],")
             else:
                 print("]",end="")
@@ -185,58 +213,3 @@ if __name__ == "__main__":
     for individu in pop:
         quickGraph(individu)
         time.sleep(0.3)
-
-"""
-if __name__ == "__main__":
-
-    screen = init(800,800)
-    pop = getPop()
-    graph = getNNRepresentation(pop[0],screen.get_size())
-    screen.blit(graph,(0,0))
-    pygame.display.flip()
-
-    time.sleep(5)
-
-    newChamp = convertNN(pop[0],"2-5-2")
-    screen.fill((255,255,255))
-    screen.blit(getNNRepresentation(newChamp,screen.get_size()),(0,0))
-    pygame.display.flip()
-
-    time.sleep(5)
-
-    newChamp = convertNN(newChamp,"2-3-2")
-    screen.fill((255,255,255))
-    screen.blit(getNNRepresentation(newChamp,screen.get_size()),(0,0))
-    pygame.display.flip()
-
-    time.sleep(5)
-
-    newChamp = convertNN(newChamp,"2-3-1")
-    screen.fill((255,255,255))
-    screen.blit(getNNRepresentation(newChamp,screen.get_size()),(0,0))
-    pygame.display.flip()
-
-    time.sleep(5)
-
-    newChamp = convertNN(newChamp,"7-3-1")
-    screen.fill((255,255,255))
-    screen.blit(getNNRepresentation(newChamp,screen.get_size()),(0,0))
-    pygame.display.flip()
-
-    time.sleep(5)
-
-    newChamp = convertNN(newChamp,"7-5-1")
-    screen.fill((255,255,255))
-    screen.blit(getNNRepresentation(newChamp,screen.get_size()),(0,0))
-    pygame.display.flip()
-
-    time.sleep(5)
-
-    newChamp = convertNN(newChamp,"7-5-2")
-    screen.fill((255,255,255))
-    screen.blit(getNNRepresentation(newChamp,screen.get_size()),(0,0))
-    pygame.display.flip()
-
-    time.sleep(5)
-
-    printWeights(newChamp)"""
