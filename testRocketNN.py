@@ -6,6 +6,7 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import math
 import numpy
+import testRocket
 
 WIDTH = 600
 HEIGHT = 800
@@ -50,46 +51,6 @@ screen = 0
 myTheta0RocketImage = 0
 background = 0
 
-def getSurfaceThrottle(throttle,width,height):
-    out = pygame.Surface((width,height))
-    out.fill((0,0,0))
-    rect = out.get_rect()
-
-    inner = pygame.Surface((width-4,height-4))
-    inner.fill((255,255,255))
-    innerRect = inner.get_rect(center=rect.center)
-
-    out.blit(inner,innerRect)
-
-    bar = pygame.Surface((width-4,int((height-4)*throttle)))
-    bar.fill((255,80,80))
-    barRect = bar.get_rect(bottomleft=innerRect.bottomleft)
-    out.blit(bar,barRect)
-    
-    return out
-
-def getSurfaceGimbal(gimbalAngleRad,gimbalMaxAngleRad,width,height):
-    out = pygame.Surface((width,height))
-    out.fill((0,0,0))
-    rect = out.get_rect()
-    inner = pygame.Surface((width-4,height-4))
-    innerRect = inner.get_rect(center=rect.center) #sachant que center=...
-    inner.fill((255,255,255))
-    
-    #radius*math.sin(gimbalMaxAngle) = width/2
-    radius = min((width-4)/2/math.sin(gimbalMaxAngleRad),height-4)
-
-    posBase = (int((width-4)/2),2)
-    posTarget = (posBase[0] + radius*math.sin(gimbalAngleRad), posBase[1] + radius*math.cos(gimbalAngleRad))
-
-    pygame.draw.line(inner, (255,80,80), posBase, posTarget, 5)
-    pygame.draw.circle(inner, (0,0,0), (int(width/2),5), 10)
-
-    out.blit(inner,innerRect)
-    
-    return out
-
-
 #affichage
 def update(dt,rocket,throttle,gimbal):
     global screen
@@ -98,11 +59,11 @@ def update(dt,rocket,throttle,gimbal):
     rocket.compute(dt,throttle,gimbal)
     screen.blit(background,(0,0))
     blitRocketPositionned(myTheta0RocketImage,rocket,screen)
-    affichageThrottle = getSurfaceThrottle(rocket.thruster.getThrottle(),20,100)
+    affichageThrottle = testRocket.getSurfaceThrottle(rocket.thruster.getThrottle(),throttle,20,100)
     affichageThrottleRect = affichageThrottle.get_rect(topleft = (40,40))
     screen.blit(affichageThrottle,affichageThrottleRect)
 
-    affichageGimbal = getSurfaceGimbal(rocket.thruster.getGimbalAngle(),rocket.thruster.maxGimbalSweep,100,100)
+    affichageGimbal = testRocket.getSurfaceGimbal(rocket.thruster.getGimbalAngle(),gimbal*rocket.thruster.maxGimbalSweep,rocket.thruster.maxGimbalSweep,100,100)
     affichageGimbalRect = affichageGimbal.get_rect(topleft = affichageThrottleRect.topright)
     screen.blit(affichageGimbal,affichageGimbalRect)
     pygame.display.flip()

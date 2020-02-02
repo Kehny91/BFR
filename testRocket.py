@@ -44,23 +44,6 @@ def blitRocketPositionned(image0, rocket, surf):
     rect = image.get_rect(center=phy2pix(rocket.mainFrame.pos))
     surf.blit(image,rect)
 
-
-#initialisation
-pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-myTheta0RocketImage =  load_image("fusee.jpg",10*SPRITESCALE,3*SPRITESCALE)
-pygame.display.set_caption('Test Rocket')
-pygame.mouse.set_visible(0)
-background = pygame.Surface(screen.get_size())
-background = background.convert()
-background.fill((250, 250, 250))
-
-#modele
-myRocket = BFR.RocketClassique(10,3,30000,1500000,4*BFR.toRad,460,5.0,4,PHY_WIDTH/2,PHY_HEIGHT/2,BFR.pi/2)
-
-throttle = 0.05
-gimbal = 0
-
 def autopilot(fusee):
     gainThrottle = 3
     gainPAngulaire = 1.5
@@ -144,34 +127,52 @@ def update(dt,rocket,throttle,gimbal):
     pygame.display.flip()
 
 
-stop = False
-while not stop:
-    if useAutopilot == 1:
-        (throttle,gimbal) = autopilot(myRocket)
-    top = time.time()
-    update(DT/TIMESCALE,myRocket,throttle,gimbal)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            stop = True
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            stop = True
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-            throttle = 1
-        elif event.type == pygame.KEYUP and event.key == pygame.K_UP:
-            throttle = 0.05
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-            gimbal = 1
-        elif event.type == pygame.KEYUP and event.key == pygame.K_RIGHT:
-            gimbal = 0
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-            gimbal = -1
-        elif event.type == pygame.KEYUP and event.key == pygame.K_LEFT:
-            gimbal = 0
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-            myRocket.goToIntialState()
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_a:
-            useAutopilot*=-1
-            throttle = 0.05
-            gimbal = 0
-    while (time.time()-top<DT):
-        time.sleep(0.0005)
+if __name__ == "__main__":
+
+    #initialisation
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    myTheta0RocketImage =  load_image("fusee.jpg",10*SPRITESCALE,3*SPRITESCALE)
+    pygame.display.set_caption('Test Rocket')
+    pygame.mouse.set_visible(0)
+    background = pygame.Surface(screen.get_size())
+    background = background.convert()
+    background.fill((250, 250, 250))
+
+    #modele
+    myRocket = BFR.RocketClassique(10,3,30000,1500000,4*BFR.toRad,460,5.0,4,PHY_WIDTH/2,PHY_HEIGHT/2,BFR.pi/2)
+
+    throttle = 0.05
+    gimbal = 0
+
+    stop = False
+    while not stop:
+        if useAutopilot == 1:
+            (throttle,gimbal) = autopilot(myRocket)
+        top = time.time()
+        update(DT/TIMESCALE,myRocket,throttle,gimbal)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                stop = True
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                stop = True
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                throttle = 1
+            elif event.type == pygame.KEYUP and event.key == pygame.K_UP:
+                throttle = 0.05
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                gimbal = 1
+            elif event.type == pygame.KEYUP and event.key == pygame.K_RIGHT:
+                gimbal = 0
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                gimbal = -1
+            elif event.type == pygame.KEYUP and event.key == pygame.K_LEFT:
+                gimbal = 0
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+                myRocket.goToIntialState()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_a:
+                useAutopilot*=-1
+                throttle = 0.05
+                gimbal = 0
+        while (time.time()-top<DT):
+            time.sleep(0.0005)
