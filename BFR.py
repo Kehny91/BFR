@@ -211,11 +211,13 @@ class RocketClassique:
         self.fins=Aileron(-dx/2,0,0,aileronCzA,aileronTotalS,aileronCzA/10,1.0,0.5,mass=0,decrochage=15*toRad,father=self.mainFrame) #Les ailerons sont en bas de la frame et ont 10 de finesse
         self.mainFrame.setPosition(x,y,theta)
         self.mainFrame.setVelocity(vx,vy,w)
-
+        self.last_throttle = 0
+        self.last_gimbal = 0
         self.pos0 = Vector(x,y)
         self.theta0 = theta
         self.v0 = Vector(vx,vy)
         self.w0 = w
+        self.ponderation = 0.5
 
     def goToIntialState(self):
         self.mainFrame.setPosition(self.pos0.x,self.pos0.y,self.theta0)
@@ -248,7 +250,7 @@ class RocketClassique:
         moments=0
         for (dev,deltaPos,deltaTheta) in self.mainFrame.attachements:
             if (type(dev)==Thruster):
-                force=dev.thrust(throttle,gimbal)
+                force=dev.thrust((self.ponderation*throttle + (1-self.ponderation)*self.last_throttle),gimbal)
             elif (type(dev)==Aileron):
                 force=dev.vectorAeroForce()
             else:
