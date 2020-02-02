@@ -2,6 +2,7 @@ import random
 import math
 import numpy
 import copy
+import signal
 
 MAXSIGMOID = 30
 
@@ -185,7 +186,11 @@ class Genetique:
                 j = random.randint(0,self.nbParents-1)
                 newIndividu = self.crossBreedingFCT(parents[i],parents[j],self.taux_mutation)
                 newGen.append(newIndividu)
+
+            s = signal.signal(signal.SIGINT,signal.SIG_IGN) #On ecoute plus le signal d'interruption
             self.populationTest = copy.deepcopy(newGen)
+            signal.signal(signal.SIGINT, s) #Reactivation
+
             for indiv in self.populationTest:
                 indiv.reset()
         else:

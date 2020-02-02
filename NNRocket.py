@@ -124,31 +124,34 @@ if __name__ == "__main__":
 
     process = None
     t0=time.time()
-    for i in range(NBGEN):
-        print("Gen ",i)
-        seed = genetique.doOneStep(quiet=False)
-        print("Temps restant = ", int((time.time()-t0)/(i+1)*(NBGEN-i)/60)," minutes")
-        if process !=None:
-            process.join()
+    try:
+        for i in range(NBGEN):
+            print("Gen ",i)
+            seed = genetique.doOneStep(quiet=False)
+            print("Temps restant = ", int((time.time()-t0)/(i+1)*(NBGEN-i)/60)," minutes")
+            if process !=None:
+                process.join()
 
-        random.seed(seed)
+            random.seed(seed)
 
-        amplitudePosition = 50
-        amplitudeTheta = 15 * BFR.toRad
-        amplitudeVitesse = 25
-        amplitudeW = 15 * BFR.toRad
-                
-        myRocket = BFR.RocketClassique(10,3,30000,1500000,4*BFR.toRad,460,5.0,4,
-                                    theta=BFR.pi/2 + (random.random()*2-1)*amplitudeTheta,
-                                    x=testRocketNN.PHY_WIDTH/2 + (random.random()*2-1)*amplitudePosition,
-                                    y=4*testRocketNN.PHY_HEIGHT/5 + (random.random()*2-1)*amplitudePosition,
-                                    vx=(random.random()*2-1)*amplitudeVitesse/4,
-                                    vy=(random.random()*(-1))*amplitudeVitesse,
-                                    w=(random.random()*2-1)*amplitudeW)
+            amplitudePosition = 50
+            amplitudeTheta = 15 * BFR.toRad
+            amplitudeVitesse = 25
+            amplitudeW = 15 * BFR.toRad
+                    
+            myRocket = BFR.RocketClassique(10,3,30000,1500000,4*BFR.toRad,460,5.0,4,
+                                        theta=BFR.pi/2 + (random.random()*2-1)*amplitudeTheta,
+                                        x=testRocketNN.PHY_WIDTH/2 + (random.random()*2-1)*amplitudePosition,
+                                        y=4*testRocketNN.PHY_HEIGHT/5 + (random.random()*2-1)*amplitudePosition,
+                                        vx=(random.random()*2-1)*amplitudeVitesse/4,
+                                        vy=(random.random()*(-1))*amplitudeVitesse,
+                                        w=(random.random()*2-1)*amplitudeW)
 
-        copyChampion=copy.deepcopy(genetique.populationTest[0])
-        process = multiprocessing.Process(target=testRocketNN.testRocketNN, args=(DT,myRocket,STEPS,copyChampion))
-        process.start()
+            copyChampion=copy.deepcopy(genetique.populationTest[0])
+            process = multiprocessing.Process(target=testRocketNN.testRocketNN, args=(DT,myRocket,STEPS,copyChampion))
+            process.start()
+    except KeyboardInterrupt:
+        print("Interruption")
 
     choix = input("Do you want to save this pop ? (Y/N)\n")
     if choix=="Y":
