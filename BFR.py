@@ -130,7 +130,7 @@ def constrain(x,m,M):
         return M
 
 class Thruster(Attachement):
-    def __init__(self,x,y,theta,maxThrust,maxGimbalSweep,ISP,mass,maxWGimbal = 2.0 * toRad,maxDThrottle = 1.0, father=None): #max 2.0 deg par seconde, et 100% de throttle par seconde
+    def __init__(self,x,y,theta,maxThrust,maxGimbalSweep,ISP,mass,maxWGimbal = 45.0 * toRad,maxDThrottle = 1.00/0.5, father=None): #max 45.0 deg par seconde, et 100% de throttle en 500ms
         super().__init__(x,y,theta,mass,father)
         self.maxThrust=maxThrust
         self.maxGimbalSweep=maxGimbalSweep

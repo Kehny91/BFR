@@ -2,6 +2,7 @@ import pygame
 import BFR
 import time
 import os
+import math
 
 WIDTH = 600
 HEIGHT = 800
@@ -74,26 +75,73 @@ def autopilot(fusee):
 
     return (throttle_loc,gimbal_loc)
 
+def getSurfaceThrottle(throttle,width,height):
+    out = pygame.Surface((width,height))
+    out.fill((0,0,0))
+    rect = out.get_rect()
+
+    inner = pygame.Surface((width-4,height-4))
+    inner.fill((255,255,255))
+    innerRect = inner.get_rect(center=rect.center)
+
+    out.blit(inner,innerRect)
+
+    bar = pygame.Surface((width-4,int((height-4)*throttle)))
+    bar.fill((255,80,80))
+    barRect = bar.get_rect(bottomleft=innerRect.bottomleft)
+    out.blit(bar,barRect)
+    
+    return out
+
+def getSurfaceGimbal(gimbalAngleRad,gimbalMaxAngleRad,width,height):
+    out = pygame.Surface((width,height))
+    out.fill((0,0,0))
+    rect = out.get_rect()
+    inner = pygame.Surface((width-4,height-4))
+    innerRect = inner.get_rect(center=rect.center) #sachant que center=...
+    inner.fill((255,255,255))
+    
+    #radius*math.sin(gimbalMaxAngle) = width/2
+    radius = min((width-4)/2/math.sin(gimbalMaxAngleRad),height-4)
+
+    posBase = (int((width-4)/2),2)
+    posTarget = (posBase[0] + radius*math.sin(gimbalAngleRad), posBase[1] + radius*math.cos(gimbalAngleRad))
+
+    pygame.draw.line(inner, (255,80,80), posBase, posTarget, 2)
+    pygame.draw.circle(inner, (0,0,0), (int(width/2),5), 10)
+
+    out.blit(inner,innerRect)
+    
+    return out
+
 
 
 useAutopilot = -1
 
 #affichage
-def update(dt):
-    global throttle
-    global gimbal
-    if useAutopilot==1:
-        (throttle,gimbal) = autopilot(myRocket)
-    myRocket.compute(dt,throttle,gimbal)
+def update(dt,rocket,throttle,gimbal):
+    global screen
+    global myTheta0RocketImage
+    global background
+    rocket.compute(dt,throttle,gimbal)
     screen.blit(background,(0,0))
-    blitRocketPositionned(myTheta0RocketImage,myRocket,screen)
+    blitRocketPositionned(myTheta0RocketImage,rocket,screen)
+    affichageThrottle = getSurfaceThrottle(rocket.thruster.getThrottle(),20,100)
+    affichageThrottleRect = affichageThrottle.get_rect(topleft = (40,40))
+    screen.blit(affichageThrottle,affichageThrottleRect)
+
+    affichageGimbal = getSurfaceGimbal(rocket.thruster.getGimbalAngle(),rocket.thruster.maxGimbalSweep,100,100)
+    affichageGimbalRect = affichageGimbal.get_rect(topleft = affichageThrottleRect.topright)
+    screen.blit(affichageGimbal,affichageGimbalRect)
     pygame.display.flip()
 
 
 stop = False
 while not stop:
+    if useAutopilot == 1:
+        (throttle,gimbal) = autopilot(myRocket)
     top = time.time()
-    update(DT/TIMESCALE)
+    update(DT/TIMESCALE,myRocket,throttle,gimbal)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             stop = True
