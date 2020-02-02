@@ -16,7 +16,8 @@ NBINDIVPOP = 100 #nbIndiv/pop
 DT = 0.03
 STEPS = 1000
 genetique = NN.GenetiqueForNN(10,NBINDIVPOP,0.5)
-NBESSAI = 1
+NBESSAI = 3
+NBGEN = 10
 
 def getInputFromRocket(rocket):
     v = rocket.getVelocity() #On veut quasi-saturer a 100m/s
@@ -109,7 +110,7 @@ def evalHover(neuralNet,seed):
 if __name__ == "__main__":
     #genetique.setEvaluationFCT(evalHover)
     genetique.setEvaluationFCT(evalLanding)
-    
+
     choix = input("Do you want to use an old pop ? (Y/N)\n")
     if choix=="Y":
         pop = popManipulator.getPop()
@@ -122,9 +123,11 @@ if __name__ == "__main__":
     genetique.setTestPopulation(pop)
 
     process = None
-    for i in range(600):
+    t0=time.time()
+    for i in range(NBGEN):
         print("Gen ",i)
         seed = genetique.doOneStep(quiet=False)
+        print("Temps restant = ", int((time.time()-t0)/(i+1)*(NBGEN-i)/60)," minutes")
         if process !=None:
             process.join()
 
