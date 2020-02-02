@@ -81,7 +81,7 @@ def getSurfaceGimbal(gimbalAngleRad,gimbalMaxAngleRad,width,height):
     posBase = (int((width-4)/2),2)
     posTarget = (posBase[0] + radius*math.sin(gimbalAngleRad), posBase[1] + radius*math.cos(gimbalAngleRad))
 
-    pygame.draw.line(inner, (255,80,80), posBase, posTarget, 2)
+    pygame.draw.line(inner, (255,80,80), posBase, posTarget, 5)
     pygame.draw.circle(inner, (0,0,0), (int(width/2),5), 10)
 
     out.blit(inner,innerRect)
