@@ -114,6 +114,18 @@ def crossbreedNN(parent1,parent2,taux_mutation):
     out.setWeight(childWeights)
     return out
 
+def crossbreedNNabs(parent1,parent2,taux_mutation):
+    """Fonction qui crée un nouveau NN dont le cerveau a la moitié des poids de du parent1, et la moitié du parent2. Puis mute l'enfant d'un pourcentage taux_mutation"""
+    out = NeuralNetwork(parent1.nbInput,parent1.nbHiddenLayer,parent1.nbNeuronPerHL,parent1.nbOutput)
+    childWeights = []
+    for i in range(len(parent1.weights)):
+        rnd = numpy.random.randint(0,2,parent1.shapes[i])
+        rndMut = numpy.random.randint(0,2,parent1.shapes[i])
+        childWeights.append((rnd*parent1.weights[i] + (1-rnd)*parent2.weights[i]))
+        childWeights[-1] = childWeights[-1] + (rndMut*numpy.random.normal(0,taux_mutation,parent1.shapes[i])) # <-- L'amplitude des mutations varie avec la moyenne (abs) des poids de la matrice
+    out.setWeight(childWeights)
+    return out
+
 
 class Genetique:
     """ La fonction de crossBreeding genere un individu a partir de deux autres"""
@@ -197,6 +209,13 @@ class Genetique:
 class GenetiqueForNN(Genetique):
     def __init__(self, nbParents, nbIndivParPop, taux_mutation, evaluateFCT=None, populationTest = None):
         super().__init__(nbParents,nbIndivParPop,taux_mutation, evaluateFCT,crossbreedNN,populationTest)
+
+    def setCrossBreedingFCT(self,fct):
+        print("CrossBreedingFCT already set for NN")
+
+class GenetiqueForNNabs(Genetique):
+    def __init__(self, nbParents, nbIndivParPop, taux_mutation, evaluateFCT=None, populationTest = None):
+        super().__init__(nbParents,nbIndivParPop,taux_mutation, evaluateFCT,crossbreedNNabs,populationTest)
 
     def setCrossBreedingFCT(self,fct):
         print("CrossBreedingFCT already set for NN")
