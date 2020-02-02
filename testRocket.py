@@ -142,7 +142,7 @@ if __name__ == "__main__":
     #modele
     myRocket = BFR.RocketClassique(10,3,30000,1500000,4*BFR.toRad,460,5.0,4,PHY_WIDTH/2,PHY_HEIGHT/2,BFR.pi/2)
 
-    throttle = 0.05
+    throttle = 0.0
     gimbal = 0
 
     stop = False
@@ -159,7 +159,7 @@ if __name__ == "__main__":
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
                 throttle = 1
             elif event.type == pygame.KEYUP and event.key == pygame.K_UP:
-                throttle = 0.05
+                throttle = 0.0
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
                 gimbal = 1
             elif event.type == pygame.KEYUP and event.key == pygame.K_RIGHT:
@@ -172,7 +172,7 @@ if __name__ == "__main__":
                 myRocket.goToIntialState()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_a:
                 useAutopilot*=-1
-                throttle = 0.05
+                throttle = 0.0
                 gimbal = 0
         while (time.time()-top<DT):
             time.sleep(0.0005)
