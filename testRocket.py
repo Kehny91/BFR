@@ -132,7 +132,7 @@ if __name__ == "__main__":
     #initialisation
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    myTheta0RocketImage =  load_image("fusee.jpg",10*SPRITESCALE,3*SPRITESCALE)
+    myTheta0RocketImage =  load_image("rocket.gif",10*SPRITESCALE,3*SPRITESCALE)
     pygame.display.set_caption('Test Rocket')
     pygame.mouse.set_visible(0)
     background = pygame.Surface(screen.get_size())
