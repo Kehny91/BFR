@@ -8,17 +8,17 @@ import math
 import numpy
 import testRocket
 
-WIDTH = 600
-HEIGHT = 800
+WIDTH = 1000
+HEIGHT = 900
 SCALE = 4 #pix/m
-SPRITESCALE = SCALE #pix/m
+SPRITESCALE = 1.5*SCALE #pix/m
 
 SPEEDMULT = 2
 
 PHY_WIDTH = WIDTH/SCALE
 PHY_HEIGHT = HEIGHT/SCALE
 
-print("Width = " + str(PHY_WIDTH) + "m \t Height = " + str(PHY_HEIGHT) + "m\n")
+#print("Width = " + str(PHY_WIDTH) + "m \t Height = " + str(PHY_HEIGHT) + "m\n")
 
 def load_image(name, width, height):
     fullname = os.path.join('sprites', name)
@@ -74,7 +74,7 @@ def testRocketNN(dt,rocket,steps,neuralNet):
     global background
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    myTheta0RocketImage =  load_image("fusee.jpg",rocket.mainFrame.dx*SPRITESCALE,rocket.mainFrame.dy*SPRITESCALE)
+    myTheta0RocketImage =  load_image("rocket.gif",int(rocket.mainFrame.dx*SPRITESCALE),int(rocket.mainFrame.dy*SPRITESCALE))
     pygame.display.set_caption('Test Rocket')
     pygame.mouse.set_visible(0)
     background = pygame.Surface(screen.get_size())
