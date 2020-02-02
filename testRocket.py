@@ -75,7 +75,7 @@ def autopilot(fusee):
 
     return (throttle_loc,gimbal_loc)
 
-def getSurfaceThrottle(throttle,width,height):
+def getSurfaceThrottle(throttleReal, throttleRequest, width,height):
     out = pygame.Surface((width,height))
     out.fill((0,0,0))
     rect = out.get_rect()
@@ -83,17 +83,21 @@ def getSurfaceThrottle(throttle,width,height):
     inner = pygame.Surface((width-4,height-4))
     inner.fill((255,255,255))
     innerRect = inner.get_rect(center=rect.center)
-
     out.blit(inner,innerRect)
 
-    bar = pygame.Surface((width-4,int((height-4)*throttle)))
+    bar = pygame.Surface((width-4,int((height-4)*throttleReal)))
     bar.fill((255,80,80))
     barRect = bar.get_rect(bottomleft=innerRect.bottomleft)
     out.blit(bar,barRect)
+
+    sidebar = pygame.Surface((3 , int((height-4)*throttleRequest)))
+    sidebar.fill((120,10,200))
+    sidebarRect = sidebar.get_rect(bottomright=innerRect.bottomright)
+    out.blit(sidebar,sidebarRect)
     
     return out
 
-def getSurfaceGimbal(gimbalAngleRad,gimbalMaxAngleRad,width,height):
+def getSurfaceGimbal(gimbalAngleRadReal,gimbalAngleRadRequest,gimbalMaxAngleRad,width,height):
     out = pygame.Surface((width,height))
     out.fill((0,0,0))
     rect = out.get_rect()
@@ -105,9 +109,11 @@ def getSurfaceGimbal(gimbalAngleRad,gimbalMaxAngleRad,width,height):
     radius = min((width-4)/2/math.sin(gimbalMaxAngleRad),height-4)
 
     posBase = (int((width-4)/2),2)
-    posTarget = (posBase[0] + radius*math.sin(gimbalAngleRad), posBase[1] + radius*math.cos(gimbalAngleRad))
+    posTargetReal = (posBase[0] + radius*math.sin(gimbalAngleRadReal), posBase[1] + radius*math.cos(gimbalAngleRadReal))
+    posTargetRequest = (posBase[0] + radius*math.sin(gimbalAngleRadRequest), posBase[1] + radius*math.cos(gimbalAngleRadRequest))
 
-    pygame.draw.line(inner, (255,80,80), posBase, posTarget, 5)
+    pygame.draw.line(inner, (255,80,80), posBase, posTargetReal, 10)
+    pygame.draw.line(inner,(120,10,200), posBase,posTargetRequest,4)
     pygame.draw.circle(inner, (0,0,0), (int(width/2),5), 10)
 
     out.blit(inner,innerRect)
@@ -126,11 +132,11 @@ def update(dt,rocket,throttle,gimbal):
     rocket.compute(dt,throttle,gimbal)
     screen.blit(background,(0,0))
     blitRocketPositionned(myTheta0RocketImage,rocket,screen)
-    affichageThrottle = getSurfaceThrottle(rocket.thruster.getThrottle(),20,100)
+    affichageThrottle = getSurfaceThrottle(rocket.thruster.getThrottle(),throttle,20,100)
     affichageThrottleRect = affichageThrottle.get_rect(topleft = (40,40))
     screen.blit(affichageThrottle,affichageThrottleRect)
 
-    affichageGimbal = getSurfaceGimbal(rocket.thruster.getGimbalAngle(),rocket.thruster.maxGimbalSweep,100,100)
+    affichageGimbal = getSurfaceGimbal(rocket.thruster.getGimbalAngle(),gimbal*rocket.thruster.maxGimbalSweep,rocket.thruster.maxGimbalSweep,100,100)
     affichageGimbalRect = affichageGimbal.get_rect(topleft = affichageThrottleRect.topright)
     screen.blit(affichageGimbal,affichageGimbalRect)
     pygame.display.flip()
