@@ -50,6 +50,38 @@ background = 0
 pygame.font.init()
 font = pygame.font.SysFont('arial', 32)
 
+def getSurfaceThrottle(throttle,width,height):
+    out = pygame.Surface((width,height))
+    out.fill((0,0,0))
+    rect = out.get_rect()
+
+    inner = pygame.Surface((width-4,height-4))
+    inner.fill((255,255,255))
+    innerRect = inner.get_rect(center=rect.center)
+
+    out.blit(inner,innerRect)
+
+    bar = pygame.Surface((width-4,int((height-4)*throttle)))
+    bar.fill((255,120,120))
+    barRect = bar.get_rect(bottomleft=innerRect.bottomleft)
+    out.blit(bar,barRect)
+    
+    return out
+"""
+def getSurfaceGimbal(gimbalAngleRad,width,height):
+    out = pygame.Surface((width,height))
+    out.fill((0,0,0))
+    rect = out.get_rect()
+
+    posBase = (int(width/2),5)
+    pygame.draw.circle(out, (0,0,0), (int(width/2),5), 10)
+
+    posTarget = posBase[0] - 
+    
+    
+    return out"""
+
+
 #affichage
 def update(dt,rocket,throttle,gimbal):
     global screen
@@ -58,13 +90,14 @@ def update(dt,rocket,throttle,gimbal):
     rocket.compute(dt,throttle,gimbal)
     screen.blit(background,(0,0))
     blitRocketPositionned(myTheta0RocketImage,rocket,screen)
-    text = font.render("Throttle = "+str( throttle ), True, (0, 0,0))
-    textrect = text.get_rect()
-    screen.blit(text,textrect)
-    text = font.render("Gimbal = "+str( gimbal ), True, (0, 0,0))
-    textrect = text.get_rect()
-    textrect.move_ip(0,40)
-    screen.blit(text,textrect)
+    #text = font.render("Throttle = "+str( throttle ), True, (0, 0,0))
+    #textrect = text.get_rect()
+    affichageThrottle = getSurfaceThrottle(throttle,20,100)
+    screen.blit(affichageThrottle,(40,40))
+    #text = font.render("Gimbal = "+str( gimbal ), True, (0, 0,0))
+    #textrect = text.get_rect()
+    #textrect.move_ip(0,40)
+    #screen.blit(text,textrect)
     pygame.display.flip()
 
 def testRocketNN(dt,rocket,steps,neuralNet):
