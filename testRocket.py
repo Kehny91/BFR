@@ -17,7 +17,7 @@ PHY_HEIGHT = HEIGHT/SCALE
 DT = 0.03
 TIMESCALE = 1 #the more, the slower will be the animation
 
-print("Width = " + str(PHY_WIDTH) + "m \t Height = " + str(PHY_HEIGHT) + "m\n")
+#print("Width = " + str(PHY_WIDTH) + "m \t Height = " + str(PHY_HEIGHT) + "m\n")
 
 def load_image(name, width, height):
     fullname = os.path.join('sprites', name)
