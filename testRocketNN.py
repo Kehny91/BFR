@@ -7,6 +7,7 @@ import pygame
 import math
 import numpy
 import testRocket
+import popManipulator
 
 WIDTH = 1000
 HEIGHT = 900
@@ -81,7 +82,10 @@ def testRocketNN(dt,rocket,steps,neuralNet):
     background = background.convert()
     background.fill((250, 250, 250))
     pygame.draw.line(background,(0,0,0),phy2pix(BFR.Vector(0,10)),phy2pix(BFR.Vector(PHY_WIDTH,10)),2)
-    
+
+    NNrep = popManipulator.getNNRepresentation(neuralNet,(250,300))
+    NNrepRect = NNrep.get_rect(topright=(WIDTH,0))
+    background.blit(NNrep,NNrepRect)
 
     rocket.goToIntialState()
     neuralNet.reset()

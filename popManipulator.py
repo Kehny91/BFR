@@ -105,15 +105,13 @@ def getNNRepresentation(neuralNet,size):
         for i,thisCenter in enumerate(posCenters[-2]):
             drawSynapse(out,thisCenter,posCenters[-1][-1],neuralNet.weights[-1][i][-1],maxWeightAmplitude)
 
-    labelMax = getTextSurface('{:10.2f}'.format(maxPos),out.get_width()/5,40,color(maxPos,maxWeightAmplitude))
+    labelMax = getTextSurface('{:.2f}'.format(maxPos),int(out.get_width()/3),30,color(maxPos,maxWeightAmplitude))
     labelMaxRect = labelMax.get_rect(topright = out.get_rect().topright)
     out.blit(labelMax,labelMaxRect)
-    labelMin = getTextSurface("-"+'{:10.2f}'.format(maxNeg),out.get_width()/5,40,color(-maxNeg,maxWeightAmplitude))
+    labelMin = getTextSurface("-"+'{:.2f}'.format(maxNeg),int(out.get_width()/3),30,color(-maxNeg,maxWeightAmplitude))
     labelMinRect = labelMin.get_rect(bottomright = out.get_rect().bottomright)
     out.blit(labelMin,labelMinRect)
 
-
-    
     return out
 
 def printWeights(neuralNet):
