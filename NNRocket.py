@@ -36,7 +36,7 @@ def evalLanding(neuralNet,seed):
     amplitudeVitesse = 25
     amplitudeW = 15 * BFR.toRad
 
-    antifitness = [0]
+    antifitness = [0,0]
     penalty = [0,0]
 
     for essai in range(NBESSAI):
@@ -64,7 +64,8 @@ def evalLanding(neuralNet,seed):
             if myRocket.getPosition().y - myRocket.mainFrame.dx/2>0 and myRocket.getPosition().y - myRocket.mainFrame.dx/2<seuil: #On est a seuil m du sol
                 penalty[1] -= 20*(seuil-(myRocket.getPosition().y- myRocket.mainFrame.dx/2))*DT
             #Statique Pos
-            antifitness[0] += (math.sqrt((myRocket.getPosition().x-testRocketNN.WIDTH/2/testRocketNN.SCALE)**2 + (myRocket.getPosition().y - myRocket.mainFrame.dx/2)**2)) * DT *0.5
+            antifitness[0] += (math.sqrt((myRocket.getPosition().x-testRocketNN.WIDTH/2/testRocketNN.SCALE)**2 + (myRocket.getPosition().y - myRocket.mainFrame.dx/2)**2)) * DT *0.3
+            antifitness[1] += abs(myRocket.getVelocity().y) * DT *2
     return (-sum(antifitness)-sum(penalty),antifitness,penalty)
 
 
