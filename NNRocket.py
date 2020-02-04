@@ -17,7 +17,7 @@ DT = 0.03
 STEPS = 1000
 genetique = NN.GenetiqueForNN(10,NBINDIVPOP,0.5)
 NBESSAI = 3
-NBGEN = 10
+NBGEN = 20
 
 def getInputFromRocket(rocket):
     v = rocket.getVelocity() #On veut quasi-saturer a 100m/s
@@ -64,7 +64,7 @@ def evalLanding(neuralNet,seed):
             if myRocket.getPosition().y - myRocket.mainFrame.dx/2>0 and myRocket.getPosition().y - myRocket.mainFrame.dx/2<seuil: #On est a seuil m du sol
                 penalty[1] -= 20*(seuil-(myRocket.getPosition().y- myRocket.mainFrame.dx/2))*DT
             #Statique Pos
-            antifitness[0] += (math.sqrt((myRocket.getPosition().x-testRocketNN.WIDTH/2/testRocketNN.SCALE)**2 + (myRocket.getPosition().y - myRocket.mainFrame.dx/2)**2)) * DT *0.1
+            antifitness[0] += (math.sqrt((myRocket.getPosition().x-testRocketNN.WIDTH/2/testRocketNN.SCALE)**2 + (myRocket.getPosition().y - myRocket.mainFrame.dx/2)**2)) * DT *0.5
     return (-sum(antifitness)-sum(penalty),antifitness,penalty)
 
 

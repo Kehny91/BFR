@@ -8,8 +8,9 @@ import math
 import numpy
 import testRocket
 import popManipulator
+import sys
 
-WIDTH = 1000
+WIDTH = 1300
 HEIGHT = 900
 SCALE = 4 #pix/m
 SPRITESCALE = 1.5*SCALE #pix/m
@@ -91,6 +92,9 @@ def testRocketNN(dt,rocket,steps,neuralNet):
     neuralNet.reset()
     for i in range(steps):
         top = time.time()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: 
+                sys.exit(0)
         neuralNet.setInputs(NNRocket.getInputFromRocket(rocket))
         neuralNet.compute()
         [throttle,gimbal] = neuralNet.getOutputs()
