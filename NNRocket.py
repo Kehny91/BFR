@@ -16,7 +16,7 @@ NBINDIVPOP = 100 #nbIndiv/pop
 DT = 0.03
 STEPS = 1000
 genetique = NN.GenetiqueForNN(10,NBINDIVPOP,0.5)
-NBESSAI = 3
+NBESSAI = 1
 NBGEN = 500
 
 def getInputFromRocket(rocket):

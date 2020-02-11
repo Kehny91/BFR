@@ -6,16 +6,19 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import math
 
-WIDTH = 600
+WIDTH = 1200
 HEIGHT = 800
 SCALE = 4 #pix/m
-SPRITESCALE = 2*SCALE #pix/m
+SPRITESCALE = 1*SCALE #pix/m
 
 PHY_WIDTH = WIDTH/SCALE
 PHY_HEIGHT = HEIGHT/SCALE
 
 DT = 0.03
-TIMESCALE = 1 #the more, the slower will be the animation
+TIMESCALE = 0.5 #the more, the slower will be the animation
+
+pygame.font.init()
+font = pygame.font.SysFont('arial', 32)
 
 #print("Width = " + str(PHY_WIDTH) + "m \t Height = " + str(PHY_HEIGHT) + "m\n")
 
@@ -42,10 +45,16 @@ def pix2phy(coord):
 def blitRocketPositionned(image0, rocket, surf):
     image = pygame.transform.rotate(image0,rocket.mainFrame.theta*BFR.toDeg)
     rect = image.get_rect(center=phy2pix(rocket.mainFrame.pos))
+    if useAutopilot==-1:
+        text = font.render("Autopilote : OFF", True, (245, 20, 20))
+    elif useAutopilot==1:
+        text = font.render("Autopilote : ON", True, (10, 200, 10))
+    textrect = text.get_rect()
+    surf.blit(text,textrect)
     surf.blit(image,rect)
 
 def autopilot(fusee):
-    gainThrottle = 3
+    gainThrottle = 2
     gainPAngulaire = 1.5
     gainKAngulaire = 0.6
     gainPCorrectionVx = 0.08

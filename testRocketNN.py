@@ -20,6 +20,9 @@ SPEEDMULT = 2
 PHY_WIDTH = WIDTH/SCALE
 PHY_HEIGHT = HEIGHT/SCALE
 
+pygame.font.init()
+font = pygame.font.SysFont('arial', 32)
+
 #print("Width = " + str(PHY_WIDTH) + "m \t Height = " + str(PHY_HEIGHT) + "m\n")
 
 def load_image(name, width, height):
@@ -68,6 +71,10 @@ def update(dt,rocket,throttle,gimbal):
     affichageGimbal = testRocket.getSurfaceGimbal(rocket.thruster.getGimbalAngle(),gimbal*rocket.thruster.maxGimbalSweep,rocket.thruster.maxGimbalSweep,100,100)
     affichageGimbalRect = affichageGimbal.get_rect(topleft = affichageThrottleRect.topright)
     screen.blit(affichageGimbal,affichageGimbalRect)
+    text = font.render("POS : ( "+ str(rocket.mainFrame.pos.x)+", "+str(rocket.mainFrame.pos.y)+")", True, (0, 0,0))
+    textrect = text.get_rect()
+    textrect.move_ip(0,200)
+    surf.blit(text,textrect)
     pygame.display.flip()
 
 def testRocketNN(dt,rocket,steps,neuralNet):
