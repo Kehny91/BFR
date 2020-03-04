@@ -285,3 +285,4 @@ class RocketClassique:
         self.mainFrame.w=self.mainFrame.w + moments*(dt/j)
         self.mainFrame.pos=self.mainFrame.pos+self.mainFrame.v*dt
         self.mainFrame.theta=normalize(self.mainFrame.theta+self.mainFrame.w*dt)
+        #self.mainFrame.theta=self.mainFrame.theta+self.mainFrame.w*dt

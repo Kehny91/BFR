@@ -71,10 +71,18 @@ def update(dt,rocket,throttle,gimbal):
     affichageGimbal = testRocket.getSurfaceGimbal(rocket.thruster.getGimbalAngle(),gimbal*rocket.thruster.maxGimbalSweep,rocket.thruster.maxGimbalSweep,100,100)
     affichageGimbalRect = affichageGimbal.get_rect(topleft = affichageThrottleRect.topright)
     screen.blit(affichageGimbal,affichageGimbalRect)
-    text = font.render("POS : ( "+ str(rocket.mainFrame.pos.x)+", "+str(rocket.mainFrame.pos.y)+")", True, (0, 0,0))
+    text = font.render("POS : ( "+ str(math.floor(rocket.mainFrame.pos.x))+", "+str(math.floor(rocket.mainFrame.pos.y))+")", True, (0, 0,0))
     textrect = text.get_rect()
     textrect.move_ip(0,200)
-    surf.blit(text,textrect)
+    screen.blit(text,textrect)
+    seuil = 10
+    platform_width = 30
+    if rocket.getPosition().y - rocket.mainFrame.dx/2>0 and rocket.getPosition().y - rocket.mainFrame.dx/2< seuil and abs(rocket.getPosition().x- WIDTH/2/SCALE/2) < platform_width/2: #On est a seuil m du sol
+        text = font.render("BONUS")
+        textrect = text.get_rect()
+        textrect.move_ip(0,300)
+        screen.blit(text,textrect)
+
     pygame.display.flip()
 
 def testRocketNN(dt,rocket,steps,neuralNet):
@@ -109,6 +117,7 @@ def testRocketNN(dt,rocket,steps,neuralNet):
         update(dt,rocket,throttle,gimbal)
         while (time.time()-top<dt/SPEEDMULT):
             time.sleep(0.0005)
+
     background.fill((180, 180, 180))
     screen.blit(background,(0,0))
     pygame.display.flip()

@@ -12,11 +12,11 @@ import datetime
 import random
 import popManipulator
 
-NBINDIVPOP = 100 #nbIndiv/pop
+NBINDIVPOP = 50 #nbIndiv/pop
 DT = 0.03
 STEPS = 1000
 genetique = NN.GenetiqueForNN(10,NBINDIVPOP,0.5)
-NBESSAI = 1
+NBESSAI = 2
 NBGEN = 500
 
 def getInputFromRocket(rocket):
@@ -32,8 +32,9 @@ def evalLanding(neuralNet,seed):
     random.seed(seed)
 
     amplitudePosition = 50
-    amplitudeTheta = 15 * BFR.toRad
-    amplitudeVitesse = 25
+    amplitudeTheta = 5 * BFR.toRad
+    v0 = -25 #vitesse en y initialement
+    amplitudeVitesse = 10
     amplitudeW = 15 * BFR.toRad
 
     antifitness = [0,0]
@@ -45,8 +46,8 @@ def evalLanding(neuralNet,seed):
                                 theta=BFR.pi/2 + (random.random()*2-1)*amplitudeTheta,
                                 x=testRocketNN.PHY_WIDTH/2 + (random.random()*2-1)*amplitudePosition,
                                 y=4*testRocketNN.PHY_HEIGHT/5 + (random.random()*2-1)*amplitudePosition,
-                                vx=(random.random()*2-1)*amplitudeVitesse/4,
-                                vy=(random.random()*(-1))*amplitudeVitesse,
+                                vx=(random.random()*2-1)*amplitudeVitesse/8,
+                                vy=v0+(random.random()*(-1))*amplitudeVitesse,
                                 w=(random.random()*2-1)*amplitudeW)
         throttle = 0
         gimbal = 0

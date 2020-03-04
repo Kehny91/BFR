@@ -9,7 +9,7 @@ import math
 WIDTH = 1200
 HEIGHT = 800
 SCALE = 4 #pix/m
-SPRITESCALE = 1*SCALE #pix/m
+SPRITESCALE = 2*SCALE #pix/m
 
 PHY_WIDTH = WIDTH/SCALE
 PHY_HEIGHT = HEIGHT/SCALE
@@ -60,7 +60,7 @@ def autopilot(fusee):
     gainPCorrectionVx = 0.08
     crossGain = 0.1
     errorVY = max(0,0 - fusee.getVelocity().y)
-    errorAng = BFR.pi/2 - fusee.getTheta()
+    errorAng = BFR.pi/2 - fusee.getTheta() + 2*BFR.pi
     errorVX = fusee.getVelocity().x
 
     throttle_loc = gainThrottle*errorVY
